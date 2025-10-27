@@ -41,11 +41,11 @@ class _LoginView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100.0,
+        toolbarHeight: 75,
         backgroundColor: Colors.transparent,
         title: GestureDetector(
           onTap: () => viewModel.launchURL('/'),
-          child: Image.asset('assets/athr_logo.png', height: 80),
+          child: Image.asset('assets/athr_logo.png', height: 50),
         ),
       ),
       body: Container(

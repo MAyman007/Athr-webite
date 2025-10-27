@@ -42,19 +42,19 @@ class _SignupView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100.0,
+        toolbarHeight: 75,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
               onTap: () => viewModel.launchURL('/', inApp: true),
-              child: Image.asset('assets/athr_logo.png', height: 80),
+              child: Image.asset('assets/athr_logo.png', height: 50),
             ),
             const SizedBox(width: 16),
             Text(
               'Onboarding',
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 22,
                 color: Theme.of(
                   context,
                 ).textTheme.bodyLarge?.color?.withOpacity(0.7),
@@ -326,7 +326,7 @@ class _SignupView extends StatelessWidget {
                       text: 'Terms of Service',
                       style: const TextStyle(
                         color: Colors.blue,
-                        decoration: TextDecoration.underline,
+                        // decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () =>
@@ -337,7 +337,7 @@ class _SignupView extends StatelessWidget {
                       text: 'Privacy Policy',
                       style: const TextStyle(
                         color: Colors.blue,
-                        decoration: TextDecoration.underline,
+                        // decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () =>

@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:athr/core/locator.dart';
 import 'package:athr/core/services/firebase_service.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:async';
+import 'dart:ui';
 
 import 'dashboard_viewmodel.dart';
 
@@ -14,9 +16,30 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<DashboardViewModel>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Athr Dashboard'),
+        toolbarHeight: 75,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () => viewModel.launchURL('/', inApp: true),
+              child: Image.asset('assets/athr_logo.png', height: 50),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              'Dashboard',
+              style: TextStyle(
+                fontSize: 22,
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.color?.withOpacity(0.7),
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ],
+        ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         actions: [
           // Alerts Button
@@ -240,6 +263,21 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
+  Widget _buildDateChart(BuildContext context, DashboardViewModel viewModel) {
+    return _ChartSection(
+      title: 'Incidents Over Time',
+      child: SizedBox(
+        height: 250,
+        width: double.infinity,
+        child: _DateLineChart(
+          data: viewModel.incidentsByDate,
+          color: Colors.blueAccent,
+          title: 'Incidents',
+        ),
+      ),
+    );
+  }
+
   Widget _buildCategoryChart(DashboardViewModel viewModel) {
     return _ChartSection(
       title: 'Incidents by Category',
@@ -301,21 +339,6 @@ class DashboardPage extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildDateChart(BuildContext context, DashboardViewModel viewModel) {
-    return _ChartSection(
-      title: 'Incidents Over Time',
-      child: SizedBox(
-        height: 250,
-        width: double.infinity,
-        child: _DateLineChart(
-          data: viewModel.incidentsByDate,
-          color: Colors.blueAccent,
-          title: 'Incidents',
-        ),
-      ),
-    );
-  }
 }
 
 /// A legend widget for the severity pie chart.
@@ -360,50 +383,157 @@ class _SeverityLegend extends StatelessWidget {
 }
 
 /// A pie chart that displays the distribution of incidents by severity.
-class _SeverityPieChart extends StatelessWidget {
+class _SeverityPieChart extends StatefulWidget {
   final DashboardViewModel viewModel;
 
   const _SeverityPieChart({required this.viewModel});
 
   @override
+  State<_SeverityPieChart> createState() => _SeverityPieChartState();
+}
+
+class _SeverityPieChartState extends State<_SeverityPieChart> {
+  int? _touchedIndex;
+  int? _lastTouchedIndex;
+  bool _isTooltipHovered = false;
+  Timer? _clearTimer;
+
+  void _scheduleClearLastIndex([int ms = 220]) {
+    _clearTimer?.cancel();
+    _clearTimer = Timer(Duration(milliseconds: ms), () {
+      if (!_isTooltipHovered && _touchedIndex == null) {
+        setState(() {
+          _lastTouchedIndex = null;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _clearTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final viewModel = widget.viewModel;
+
     if (viewModel.incidentsBySeverity.isEmpty) {
       return const Center(child: Text('No severity data available.'));
     }
+
+    final entries = viewModel.incidentsBySeverity.entries.toList();
+
+    final displayIndex = _touchedIndex ?? _lastTouchedIndex;
 
     return Row(
       children: [
         Expanded(
           flex: 2,
-          child: PieChart(
-            PieChartData(
-              sections: viewModel.incidentsBySeverity.entries.map((entry) {
-                final severity = entry.key;
-                final count = entry.value;
-                return PieChartSectionData(
-                  gradient: LinearGradient(
-                    colors: [severity.color.withOpacity(0.7), severity.color],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              PieChart(
+                PieChartData(
+                  sections: entries.asMap().entries.map((mapEntry) {
+                    final index = mapEntry.key;
+                    final entry = mapEntry.value;
+                    final severity = entry.key;
+                    final count = entry.value;
+                    final isTouched =
+                        _touchedIndex == index ||
+                        (_touchedIndex == null &&
+                            _lastTouchedIndex == index &&
+                            _isTooltipHovered);
+                    return PieChartSectionData(
+                      gradient: LinearGradient(
+                        colors: [
+                          severity.color.withOpacity(0.7),
+                          severity.color,
+                        ],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                      ),
+                      value: count.toDouble(),
+                      title: count.toString(),
+                      radius: isTouched ? 105 : 90,
+                      titleStyle: TextStyle(
+                        fontSize: isTouched ? 18 : 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: const [
+                          Shadow(color: Colors.black, blurRadius: 2),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  sectionsSpace: 2,
+                  centerSpaceRadius: 35,
+                  pieTouchData: PieTouchData(
+                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                      setState(() {
+                        if (!event.isInterestedForInteractions ||
+                            pieTouchResponse == null ||
+                            pieTouchResponse.touchedSection == null) {
+                          // user left the pie - clear active touch but keep last index so tooltip can be hovered
+                          // preserve previous last index if available so tooltip remains visible while pointer moves to it
+                          _lastTouchedIndex =
+                              _lastTouchedIndex ?? _touchedIndex;
+                          _touchedIndex = null;
+                          // If tooltip is not hovered, schedule clearing; otherwise keep showing until tooltip exit.
+                          if (!_isTooltipHovered) {
+                            _scheduleClearLastIndex();
+                          }
+                        } else {
+                          final idx = pieTouchResponse
+                              .touchedSection!
+                              .touchedSectionIndex;
+                          _touchedIndex = idx >= 0 ? idx : null;
+                          _lastTouchedIndex = _touchedIndex;
+                          _clearTimer?.cancel();
+                        }
+                      });
+                    },
                   ),
-                  value: count.toDouble(),
-                  title: count.toString(),
-                  radius: 90,
-                  titleStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    shadows: [Shadow(color: Colors.black, blurRadius: 2)],
+                ),
+              ),
+              if ((displayIndex != null) &&
+                  displayIndex >= 0 &&
+                  displayIndex < entries.length)
+                Positioned(
+                  top: 16,
+                  child: MouseRegion(
+                    onEnter: (_) {
+                      setState(() {
+                        _isTooltipHovered = true;
+                        _clearTimer?.cancel();
+                      });
+                    },
+                    onExit: (_) {
+                      setState(() {
+                        _isTooltipHovered = false;
+                      });
+                      _scheduleClearLastIndex();
+                    },
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 200),
+                      opacity: 1,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.75),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: _buildTooltip(entries[displayIndex]),
+                      ),
+                    ),
                   ),
-                  borderSide: BorderSide(
-                    color: Colors.black.withOpacity(0.2),
-                    width: 1,
-                  ),
-                );
-              }).toList(),
-              sectionsSpace: 2,
-              centerSpaceRadius: 35,
-            ),
+                ),
+            ],
           ),
         ),
         const SizedBox(width: 24),
@@ -412,6 +542,42 @@ class _SeverityPieChart extends StatelessWidget {
           child: _SeverityLegend(
             incidentsBySeverity: viewModel.incidentsBySeverity,
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTooltip(MapEntry<IncidentSeverity, int> entry) {
+    final severity = entry.key;
+    final count = entry.value;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: severity.color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${severity.name[0].toUpperCase()}${severity.name.substring(1)}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              '$count incident${count == 1 ? '' : 's'}',
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
+            ),
+          ],
         ),
       ],
     );
@@ -665,7 +831,7 @@ class _VerticalBarChart extends StatelessWidget {
 }
 
 /// A reusable line chart widget for time-series data.
-class _DateLineChart extends StatelessWidget {
+class _DateLineChart extends StatefulWidget {
   final Map<DateTime, int> data;
   final Color color;
   final String title;
@@ -677,7 +843,66 @@ class _DateLineChart extends StatelessWidget {
   });
 
   @override
+  State<_DateLineChart> createState() => _DateLineChartState();
+}
+
+class _DateLineChartState extends State<_DateLineChart>
+    with TickerProviderStateMixin {
+  int? _touchedIndex;
+  late final AnimationController _hoverController;
+  late final Animation<double> _hoverCurve;
+  late final AnimationController _rippleController;
+  double get _rippleProgress => _rippleController.value;
+
+  @override
+  void initState() {
+    super.initState();
+    _hoverController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _hoverCurve =
+        CurvedAnimation(
+          parent: _hoverController,
+          curve: Curves.easeOutBack,
+          reverseCurve: Curves.easeIn,
+        )..addListener(() {
+          // rebuild to reflect hover animation progress
+          setState(() {});
+        });
+
+    _rippleController =
+        AnimationController(
+            vsync: this,
+            duration: const Duration(milliseconds: 700),
+          )
+          ..addListener(() {
+            // rebuild to reflect ripple progress
+            setState(() {});
+          })
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              // reset so ripple can be triggered again
+              _rippleController.reset();
+            }
+          });
+  }
+
+  @override
+  void dispose() {
+    _hoverController.dispose();
+    _rippleController.dispose();
+    super.dispose();
+  }
+
+  double get _hoverProgress => _hoverCurve.value;
+
+  @override
   Widget build(BuildContext context) {
+    final data = widget.data;
+    final color = widget.color;
+    final title = widget.title;
+
     if (data.isEmpty) {
       return Center(child: Text('No data available for $title.'));
     }
@@ -695,6 +920,23 @@ class _DateLineChart extends StatelessWidget {
         )
         .toList();
 
+    // animated visual tuning driven by hover progress (reduced glow)
+    final double topAreaOpacity = lerpDouble(0.3, 0.6, _hoverProgress) ?? 0.3;
+    final double bottomAreaOpacity =
+        lerpDouble(0.0, 0.12, _hoverProgress) ?? 0.0;
+    final Color animatedDotColor =
+        Color.lerp(
+          color,
+          Colors.white,
+          (_hoverProgress * 0.45).clamp(0.0, 1.0),
+        ) ??
+        color;
+
+    // Defensive interval computation (avoid division by zero)
+    final double? interval = spots.length > 1
+        ? (spots.last.x - spots.first.x) / 4
+        : null;
+
     return LineChart(
       LineChartData(
         gridData: const FlGridData(show: false),
@@ -710,7 +952,7 @@ class _DateLineChart extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 30,
-              interval: (spots.last.x - spots.first.x) / 4, // Adjust interval
+              interval: interval,
               getTitlesWidget: (value, meta) {
                 final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
                 return SideTitleWidget(
@@ -730,17 +972,95 @@ class _DateLineChart extends StatelessWidget {
         ),
         borderData: FlBorderData(show: false),
         lineBarsData: [
+          // Glow layer (drawn under the main line) — appears on hover to create a soft bloom
           LineChartBarData(
             spots: spots,
             isCurved: true,
-            gradient: LinearGradient(colors: [color.withOpacity(0.5), color]),
-            barWidth: 5,
+            gradient: LinearGradient(
+              colors: [
+                (Color.lerp(color, Colors.white, 0.5) ?? color).withOpacity(
+                  0.06 * _hoverProgress,
+                ),
+                (Color.lerp(color, Colors.white, 0.9) ?? color).withOpacity(
+                  0.03 * _hoverProgress,
+                ),
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            barWidth: lerpDouble(0, 12, _hoverProgress) ?? 0,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
               gradient: LinearGradient(
-                colors: [color.withOpacity(0.3), color.withOpacity(0.0)],
+                colors: [
+                  color.withOpacity(
+                    lerpDouble(0.01, topAreaOpacity, _hoverProgress) ?? 0.01,
+                  ),
+                  color.withOpacity(
+                    lerpDouble(0.0, bottomAreaOpacity, _hoverProgress) ?? 0.0,
+                  ),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+
+          // Main line (interactive)
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            gradient: LinearGradient(
+              colors: [
+                color.withOpacity(lerpDouble(0.3, 0.65, _hoverProgress) ?? 0.5),
+                (Color.lerp(
+                      color,
+                      Colors.white,
+                      (_hoverProgress * 0.35).clamp(0.0, 1.0),
+                    ) ??
+                    color),
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            barWidth: lerpDouble(5, 10, _hoverProgress) ?? 5,
+            isStrokeCapRound: true,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, barData, idx) {
+                final isActive = _touchedIndex != null && _touchedIndex == idx;
+                final double animatedRadius = isActive
+                    ? (lerpDouble(6, 14, _hoverProgress) ?? 8)
+                    : 0;
+                final double animatedStroke = isActive
+                    ? (lerpDouble(2, 8, _hoverProgress) ?? 2)
+                    : 0;
+                if (!isActive) {
+                  // invisible dot for non-active points
+                  return FlDotCirclePainter(
+                    radius: 0,
+                    color: Colors.transparent,
+                    strokeWidth: 0,
+                  );
+                }
+                // Animated filled dot with stronger halo; radius/stroke driven by hover curve
+                return FlDotCirclePainter(
+                  radius: animatedRadius,
+                  color: animatedDotColor,
+                  strokeWidth: animatedStroke,
+                  strokeColor: animatedDotColor.withOpacity(0.95),
+                );
+              },
+            ),
+            belowBarData: BarAreaData(
+              show: true,
+              gradient: LinearGradient(
+                colors: [
+                  color.withOpacity(topAreaOpacity),
+                  color.withOpacity(bottomAreaOpacity),
+                ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -748,13 +1068,89 @@ class _DateLineChart extends StatelessWidget {
           ),
         ],
         lineTouchData: LineTouchData(
+          handleBuiltInTouches: true,
+          touchCallback: (FlTouchEvent event, LineTouchResponse? response) {
+            if (!event.isInterestedForInteractions ||
+                response == null ||
+                response.lineBarSpots == null ||
+                response.lineBarSpots!.isEmpty) {
+              // clear active touch and reverse hover animation
+              setState(() {
+                _touchedIndex = null;
+              });
+              _hoverController.reverse();
+            } else {
+              final newIndex = response.lineBarSpots!.first.spotIndex;
+              setState(() {
+                _touchedIndex = newIndex;
+              });
+              _hoverController.forward();
+              // trigger ripple animation each time a new point is hovered/tapped
+              _rippleController.forward(from: 0.0);
+            }
+          },
+          getTouchedSpotIndicator: (barData, indicators) {
+            return indicators.map((index) {
+              return TouchedSpotIndicatorData(
+                FlLine(color: Colors.white24, strokeWidth: 1),
+                FlDotData(
+                  show: true,
+                  getDotPainter: (spot, percent, bar, idx) {
+                    final isActive =
+                        _touchedIndex != null && _touchedIndex == idx;
+                    final double baseRadius = isActive
+                        ? (lerpDouble(6, 12, _hoverProgress) ?? 8)
+                        : 4;
+                    final double baseStroke = isActive
+                        ? (lerpDouble(2, 6, _hoverProgress) ?? 2)
+                        : 1;
+                    // ripple expands and fades using _rippleProgress
+                    final double rippleRadius =
+                        (lerpDouble(
+                          baseRadius,
+                          baseRadius + 28,
+                          _rippleProgress,
+                        ) ??
+                        baseRadius);
+                    final double rippleStroke =
+                        (lerpDouble(
+                          baseStroke,
+                          baseStroke + 8,
+                          _rippleProgress,
+                        ) ??
+                        baseStroke);
+                    final double rippleOpacity =
+                        (1.0 - _rippleProgress).clamp(0.0, 1.0) *
+                        (isActive ? 0.95 : 0.5);
+                    // Draw only the expanding ring here. The main filled dot is drawn by the line's dotData.
+                    return FlDotCirclePainter(
+                      radius: rippleRadius,
+                      color: Colors.transparent,
+                      strokeWidth: rippleStroke,
+                      strokeColor: animatedDotColor.withOpacity(rippleOpacity),
+                    );
+                  },
+                ),
+              );
+            }).toList();
+          },
           touchTooltipData: LineTouchTooltipData(
             getTooltipColor: (touchedSpot) => Colors.blueGrey.withOpacity(0.8),
             getTooltipItems: (touchedSpots) {
+              // We MUST return a list of the same size as touchedSpots.
+              // We will map [spot0, spot1] to [null, tooltipItem1]
               return touchedSpots.map((spot) {
+                // Check the barIndex.
+                if (spot.barIndex == 0) {
+                  // This is the "Glow" line, return null to show nothing
+                  return null;
+                }
+
+                // This is the "Main" line (barIndex 1)
                 final date = DateTime.fromMillisecondsSinceEpoch(
                   spot.x.toInt(),
                 );
+
                 return LineTooltipItem(
                   '${DateFormat.yMMM().format(date)}\n${spot.y.toInt()} incidents',
                   const TextStyle(color: Colors.white),

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/locator.dart';
 import '../../core/models/incident.dart';
 import '../../core/services/incident_service.dart';
@@ -28,6 +29,13 @@ class DashboardViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   List<Incident> get incidents => _incidents;
   String? get errorMessage => _errorMessage;
+
+  Future<void> launchURL(String url, {bool inApp = false}) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, webOnlyWindowName: inApp ? '_self' : '_blank')) {
+      _errorMessage = 'Could not launch $url';
+    }
+  }
 
   /// Loads incident data from the service and updates the state.
   Future<void> loadData() async {

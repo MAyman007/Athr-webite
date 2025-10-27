@@ -151,12 +151,12 @@ class _MetricDetailsPageState extends State<MetricDetailsPage> {
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<SortBy>>[
               const PopupMenuItem<SortBy>(
-                value: SortBy.severity,
-                child: Text('Sort by Severity'),
-              ),
-              const PopupMenuItem<SortBy>(
                 value: SortBy.date,
                 child: Text('Sort by Date'),
+              ),
+              const PopupMenuItem<SortBy>(
+                value: SortBy.severity,
+                child: Text('Sort by Severity'),
               ),
             ],
           ),
