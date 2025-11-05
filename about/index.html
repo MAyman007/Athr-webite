@@ -101,7 +101,7 @@
         <div class="container">
             <nav class="navbar">
                 <a href="/" class="logo-link">
-                    <div class="logo"><img src="../assets/athr_logo.png" alt="Athr Logo" class="logo animate up animate-delay-1"></div>
+                    <div class="logo"><img src="../assets/athr_logo.png" alt="Athr Logo" class="logo"></div>
                 </a>
             </nav>
         </div>
@@ -112,68 +112,41 @@
             <div class="container about-content">
 
                 <!-- Our Mission -->
-                <h2 class="animate up animate-delay-1">Our Mission</h2>
-                <p class="animate up animate-delay-1">Athr (أثر) was founded with a clear mission: to make proactive threat intelligence accessible to every organization, not just a luxury for the few. In a digital landscape filled with noise, we cut through the clutter to deliver security alerts that matter. We believe that to truly secure your organization, you need intelligence that is not only timely but simple to understand and immediately actionable.</p>
+                <h2>Our Mission</h2>
+                <p>Athr (أثر) was founded with a clear mission: to make proactive threat intelligence accessible to every organization, not just a luxury for the few. In a digital landscape filled with noise, we cut through the clutter to deliver security alerts that matter. We believe that to truly secure your organization, you need intelligence that is not only timely but simple to understand and immediately actionable.</p>
 
                 <!-- Our Philosophy: Beyond Monitoring -->
-                <h2 class="animate up animate-delay-2">Beyond Monitoring: From Data to Action</h2>
-                <p class="animate up animate-delay-2">In a world of constant security alerts, "alert fatigue" is a real problem. Most tools just tell you what was leaked. Athr is built on the philosophy that you need to know how it was leaked and what to do next.</p>
+                <h2>Beyond Monitoring: From Data to Action</h2>
+                <p>In a world of constant security alerts, "alert fatigue" is a real problem. Most tools just tell you what was leaked. Athr is built on the philosophy that you need to know how it was leaked and what to do next.</p>
                 
-                <h3 class="animate up animate-delay-3">1. Connect External Leaks to Internal Assets</h3>
-                <p class="animate up animate-delay-3">This is our core differentiator. Our Compromised Asset Guardian doesn't just tell you "an employee's credential was found." It connects that external leak to a specific, compromised internal device or user account. This transforms a generic alert into a precise, actionable starting point for your IT team.</p>
+                <h3>1. Connect External Leaks to Internal Assets</h3>
+                <p>This is our core differentiator. Our Compromised Asset Guardian doesn't just tell you "an employee's credential was found." It connects that external leak to a specific, compromised internal device or user account. This transforms a generic alert into a precise, actionable starting point for your IT team.</p>
 
-                <h3 class="animate up animate-delay-4">2. Simplicity for Non-Experts, Depth for Experts</h3>
-                <p class="animate up animate-delay-4">Security is a team sport. Our platform is designed for the whole organization, not just the security experts. We translate complex data into plain-language summaries and provide a prioritized, step-by-step "Recommended Actions" checklist for every single incident. This empowers non-technical managers to understand the risk while giving experts the deep technical data they need to investigate.</p>
+                <h3>2. Simplicity for Non-Experts, Depth for Experts</h3>
+                <p>Security is a team sport. Our platform is designed for the whole organization, not just the security experts. We translate complex data into plain-language summaries and provide a prioritized, step-by-step "Recommended Actions" checklist for every single incident. This empowers non-technical managers to understand the risk while giving experts the deep technical data they need to investigate.</p>
 
-                <h3 class="animate up animate-delay-5">3. A Platform Built for Modern Teams</h3>
-                <p class="animate up animate-delay-5">We believe in automation and integration. Athr is built to connect with the tools you already use. Our platform can automatically send critical alerts to your team's workflow, whether that's in Slack, a project management tool, or your internal ticketing system. This saves time and ensures threats are handled without delay.</p>
+                <h3>3. A Platform Built for Modern Teams</h3>
+                <p>We believe in automation and integration. Athr is built to connect with the tools you already use. Our platform can automatically send critical alerts to your team's workflow, whether that's in Slack, a project management tool, or your internal ticketing system. This saves time and ensures threats are handled without delay.</p>
 
                 <!-- Our Team (Builds Local Trust) -->
-                <h2 class="animate up animate-delay-4">Our Story</h2>
-                <p class="animate up animate-delay-4">Founded in Egypt, Athr was built by a team of security researchers and engineers who were tired of seeing organizations in the MENA region struggle with overpriced, overly complex security tools. We are not a faceless corporation; we are your local partners in digital defense, dedicated to building a platform that understands the specific challenges and opportunities of our region.</p>
+                <h2>Our Story</h2>
+                <p>Founded in Egypt, Athr was built by a team of security researchers and engineers who were tired of seeing organizations in the MENA region struggle with overpriced, overly complex security tools. We are not a faceless corporation; we are your local partners in digital defense, dedicated to building a platform that understands the specific challenges and opportunities of our region.</p>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
         <div class="container">
-            <p class="copyright animate fade animate-delay-1">&copy; 2025 Athr Intelligence. All rights reserved.</p>
+            <p class="copyright">&copy; 2025 Athr Intelligence. All rights reserved.</p>
             <ul class="footer-links">
-                <li class="animate up animate-delay-2"><a href="">About</a></li>
-                <li class="animate up animate-delay-3"><a href="../contact">Contact</a></li>
-                <li class="animate up animate-delay-4"><a href="../privacy-policy">Privacy Policy</a></li>
-                <li class="animate up animate-delay-5"><a href="../terms-of-service/">Terms of Service</a></li>
+                <li><a href="">About</a></li>
+                <li><a href="../contact">Contact</a></li>
+                <li><a href="../privacy-policy">Privacy Policy</a></li>
+                <li><a href="../terms-of-service/">Terms of Service</a></li>
             </ul>
         </div>
     </footer>
 
-<script>
-(function(){
-  // Respect reduced motion: if user prefers reduced motion, reveal all immediately.
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const elems = Array.from(document.querySelectorAll('.animate'));
-
-  if (prefersReduced) {
-    elems.forEach(el => el.classList.add('in-view'));
-    return;
-  }
-
-  const io = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Add the class that triggers CSS animations
-        entry.target.classList.add('in-view');
-        // Stop observing once revealed
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.12
-  });
-
-  elems.forEach(el => io.observe(el));
-})();
-</script>
 
 </body>
 </html>

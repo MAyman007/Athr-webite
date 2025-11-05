@@ -36,6 +36,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css?v=2">
     <style>
+        /* Page-level override: fully disable animations on this page */
+        .animate,
+        .animate.up,
+        .animate.fade,
+        .animate.slow,
+        [class*="animate-delay"] {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+            will-change: auto !important;
+        }
+    </style>
+    <style>
         /* Overrides for a slimmer header on this page */
         .hero {
             padding: 1rem 0;
@@ -92,7 +105,7 @@
         <div class="container">
             <nav class="navbar">
                 <a href="/" class="logo-link">
-                    <div class="logo"><img src="../assets/athr_logo.png" alt="Athr Logo" class="logo animate up animate-delay-1"></div>
+                    <div class="logo"><img src="../assets/athr_logo.png" alt="Athr Logo" class="logo"></div>
                 </a>
             </nav>
         </div>
@@ -101,107 +114,79 @@
     <main>
         <section id="terms-of-service" class="features">
             <div class="container legal-content">
-                <h2 class="animate up animate-delay-1">Terms of Service</h2>
+                <h2>Terms of Service</h2>
 
-                <p class="animate up animate-delay-1">Please read these Terms of Servic carefully before using the Athr threat intelligence platform (the "Service") operated by Athr Intelligence.</p>
-                <p class="animate up animate-delay-1">Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users, and others who access or use the Service. By accessing or using the Service, you agree to be bound by these Terms. If you disagree with any part of the terms, then you may not access the Service.</p>
+                <p>Please read these Terms of Servic carefully before using the Athr threat intelligence platform (the "Service") operated by Athr Intelligence.</p>
+                <p>Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users, and others who access or use the Service. By accessing or using the Service, you agree to be bound by these Terms. If you disagree with any part of the terms, then you may not access the Service.</p>
 
-                <h3 class="animate up animate-delay-2">1. Accounts</h3>
-                <p class="animate up animate-delay-2">When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.</p>
-                <p class="animate up animate-delay-2">You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password, whether your password is with our Service or a third-party service. You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
+                <h3>1. Accounts</h3>
+                <p>When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.</p>
+                <p>You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password, whether your password is with our Service or a third-party service. You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
 
-                <h3 class="animate up animate-delay-3">2. Description of Service</h3>
-                <p class="animate up animate-delay-3">Athr provides a threat intelligence platform that scans publicly available and other sources for information related to the organizational assets you provide (such as domains, IP ranges, and keywords). We collate this information and present it to you in the form of alerts and reports. The data we provide is based on our best-effort collection and analysis of external data. We do not guarantee the accuracy, completeness, or timeliness of the information provided and are not responsible for its interpretation or use by you.</p>
+                <h3>2. Description of Service</h3>
+                <p>Athr provides a threat intelligence platform that scans publicly available and other sources for information related to the organizational assets you provide (such as domains, IP ranges, and keywords). We collate this information and present it to you in the form of alerts and reports. The data we provide is based on our best-effort collection and analysis of external data. We do not guarantee the accuracy, completeness, or timeliness of the information provided and are not responsible for its interpretation or use by you.</p>
                 
-                <h3 class="animate up animate-delay-4">3. Subscriptions and Fees</h3>
-                <p class="animate up animate-delay-4">Some parts of the Service are billed on a subscription basis ("Subscription(s)"). You will be billed in advance on a recurring and periodic basis (such as monthly or annually), depending on the subscription plan you select.</p>
-                <p class="animate up animate-delay-4">At the end of each billing cycle, your Subscription will automatically renew under the exact same conditions unless you cancel it or we cancel it. You may cancel your Subscription renewal either through your online account management page or by contacting our support team.</p>
-                <p class="animate up animate-delay-4">A valid payment method is required to process the payment for your Subscription. We may change the Subscription fees at any time. Any fee change will become effective at the end of the then-current billing cycle. We will provide you with reasonable prior notice of any change in fees to give you an opportunity to terminate your Subscription before such change becomes effective.</p>
+                <h3>3. Subscriptions and Fees</h3>
+                <p>Some parts of the Service are billed on a subscription basis ("Subscription(s)"). You will be billed in advance on a recurring and periodic basis (such as monthly or annually), depending on the subscription plan you select.</p>
+                <p>At the end of each billing cycle, your Subscription will automatically renew under the exact same conditions unless you cancel it or we cancel it. You may cancel your Subscription renewal either through your online account management page or by contacting our support team.</p>
+                <p>A valid payment method is required to process the payment for your Subscription. We may change the Subscription fees at any time. Any fee change will become effective at the end of the then-current billing cycle. We will provide you with reasonable prior notice of any change in fees to give you an opportunity to terminate your Subscription before such change becomes effective.</p>
 
-                <!-- <h3 class="animate up animate-delay-5">4. Free Tier</h3>
-                <p class="animate up animate-delay-5">We may offer a free subscription plan ("Free Tier"). We reserve the right to change, limit, or terminate the Free Tier at any time and for any reason. We will not be liable for any modification, suspension, or discontinuance of the Free Tier.</p> -->
+                <!-- <h3>4. Free Tier</h3>
+                <p>We may offer a free subscription plan ("Free Tier"). We reserve the right to change, limit, or terminate the Free Tier at any time and for any reason. We will not be liable for any modification, suspension, or discontinuance of the Free Tier.</p> -->
 
-                <h3 class="animate up animate-delay-5">4. Acceptable Use Policy</h3>
-                <p class="animate up animate-delay-5">You agree to use the Service only for lawful, defensive security purposes. You agree not to use the Service:</p>
+                <h3>4. Acceptable Use Policy</h3>
+                <p>You agree to use the Service only for lawful, defensive security purposes. You agree not to use the Service:</p>
                 <ul>
-                    <li class="animate up animate-delay-5">In any way that violates any applicable national or international law or regulation.</li>
-                    <li class="animate up animate-delay-5">For the purpose of exploiting, harming, or attempting to exploit or harm minors in any way.</li>
-                    <li class="animate up animate-delay-5">To transmit, or procure the sending of, any advertising or promotional material ("spam").</li>
-                    <li class="animate up animate-delay-5">To impersonate or attempt to impersonate Athr, an Athr employee, another user, or any other person or entity.</li>
-                    <li class="animate up animate-delay-5">To engage in any other conduct that restricts or inhibits anyone's use or enjoyment of the Service, or which, as determined by us, may harm us or users of the Service or expose them to liability.</li>
-                    <li class="animate up animate-delay-5">To attempt to gain unauthorized access to, interfere with, damage, or disrupt any parts of the Service, the server on which the Service is stored, or any server, computer, or database connected to the Service.</li>
+                    <li>In any way that violates any applicable national or international law or regulation.</li>
+                    <li>For the purpose of exploiting, harming, or attempting to exploit or harm minors in any way.</li>
+                    <li>To transmit, or procure the sending of, any advertising or promotional material ("spam").</li>
+                    <li>To impersonate or attempt to impersonate Athr, an Athr employee, another user, or any other person or entity.</li>
+                    <li>To engage in any other conduct that restricts or inhibits anyone's use or enjoyment of the Service, or which, as determined by us, may harm us or users of the Service or expose them to liability.</li>
+                    <li>To attempt to gain unauthorized access to, interfere with, damage, or disrupt any parts of the Service, the server on which the Service is stored, or any server, computer, or database connected to the Service.</li>
                 </ul>
 
-                <!-- <h3 class="animate up animate-delay-5">6. API Usage</h3>
-                <p class="animate up animate-delay-5">If your subscription plan includes access to our Application Programming Interface ("API"), you agree to abide by all rules and documentation we provide for the API. You will not attempt to bypass any rate-limiting or security features. We reserve the right to suspend or terminate your API access if we detect abusive behavior.</p> -->
+                <!-- <h3>6. API Usage</h3>
+                <p>If your subscription plan includes access to our Application Programming Interface ("API"), you agree to abide by all rules and documentation we provide for the API. You will not attempt to bypass any rate-limiting or security features. We reserve the right to suspend or terminate your API access if we detect abusive behavior.</p> -->
 
-                <h3 class="animate up animate-delay-5">5. Intellectual Property</h3>
-                <p class="animate up animate-delay-5">The Service and its original content (excluding data provided by you or found in public sources), features, and functionality are and will remain the exclusive property of Athr Intelligence and its licensors. The Service is protected by copyright, trademark, and other laws of both Egypt and foreign countries. Our trademarks may not be used in connection with any product or service without our prior written consent.</p>
+                <h3>5. Intellectual Property</h3>
+                <p>The Service and its original content (excluding data provided by you or found in public sources), features, and functionality are and will remain the exclusive property of Athr Intelligence and its licensors. The Service is protected by copyright, trademark, and other laws of both Egypt and foreign countries. Our trademarks may not be used in connection with any product or service without our prior written consent.</p>
 
-                <h3 class="animate up animate-delay-5">6. Limitation of Liability</h3>
-                <p class="animate up animate-delay-5">In no event shall Athr, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service;
+                <h3>6. Limitation of Liability</h3>
+                <p>In no event shall Athr, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service;
  any conduct or content of any third party on the Service; (iii) any content obtained from the Service; and (iv) unauthorized access, use or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence) or any other legal theory, whether or not we have been informed of the possibility of such damage, and even if a remedy set forth herein is found to have failed of its essential purpose.</p>
 
-                <h3 class="animate up animate-delay-5">7. Disclaimer</h3>
-                <p class="animate up animate-delay-5">Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement or course of performance.</p>
-                <p class="animate up animate-delay-5">Athr Intelligence does not warrant that a) the Service will function uninterrupted, secure or available at any particular time or location; b) any errors or defects will be corrected; c) the Service is free of viruses or other harmful components; or d) the results of using the Service will meet your requirements.</p>
+                <h3>7. Disclaimer</h3>
+                <p>Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement or course of performance.</p>
+                <p>Athr Intelligence does not warrant that a) the Service will function uninterrupted, secure or available at any particular time or location; b) any errors or defects will be corrected; c) the Service is free of viruses or other harmful components; or d) the results of using the Service will meet your requirements.</p>
 
-                <h3 class="animate up animate-delay-5">8. Termination</h3>
-                <p class="animate up animate-delay-5">We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever, including without limitation if you breach the Terms.</p>
-                <p class="animate up animate-delay-5">If you wish to terminate your account, you may do so by cancelling your subscription and ceasing to use the Service. All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</p>
+                <h3>8. Termination</h3>
+                <p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+                <p>If you wish to terminate your account, you may do so by cancelling your subscription and ceasing to use the Service. All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</p>
 
-                <h3 class="animate up animate-delay-5">9. Governing Law</h3>
-                <p class="animate up animate-delay-5">These Terms shall be governed and construed in accordance with the laws of Egypt, without regard to its conflict of law provisions. Any disputes arising from or relating to these Terms or the Service shall be subject to the exclusive jurisdiction of the courts of Cairo, Egypt.</p>
+                <h3>9. Governing Law</h3>
+                <p>These Terms shall be governed and construed in accordance with the laws of Egypt, without regard to its conflict of law provisions. Any disputes arising from or relating to these Terms or the Service shall be subject to the exclusive jurisdiction of the courts of Cairo, Egypt.</p>
 
-                <h3 class="animate up animate-delay-5">10. Changes to Terms</h3>
-                <p class="animate up animate-delay-5">We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
-                <p class="animate up animate-delay-5">By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, you are no longer authorized to use the Service.</p>
+                <h3>10. Changes to Terms</h3>
+                <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+                <p>By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, you are no longer authorized to use the Service.</p>
 
-                <h3 class="animate up animate-delay-5">11. Contact Us</h3>
-                <p class="animate up animate-delay-5">If you have any questions about these Terms, please contact us through the "Contact" link on our website.</p>
+                <h3>11. Contact Us</h3>
+                <p>If you have any questions about these Terms, please contact us through the "Contact" link on our website.</p>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
         <div class="container">
-            <p class="copyright animate fade animate-delay-1">&copy; 2025 Athr Intelligence. All rights reserved.</p>
+            <p class="copyright">&copy; 2025 Athr Intelligence. All rights reserved.</p>
             <ul class="footer-links">
-                <li class="animate up animate-delay-2"><a href="../about">About</a></li>
-                <li classD="animate up animate-delay-3"><a href="../contact">Contact</a></li>
-                <li class="animate up animate-delay-4"><a href="../privacy-policy">Privacy Policy</a></li>
-                <li class="animate up animate-delay-5"><a href="">Terms of Service</a></li>
+                <li><a href="../about">About</a></li>
+                <li><a href="../contact">Contact</a></li>
+                <li><a href="../privacy-policy">Privacy Policy</a></li>
+                <li><a href="">Terms of Service</a></li>
             </ul>
         </div>
     </footer>
-
-<script>
-(function(){
-  // Respect reduced motion: if user prefers reduced motion, reveal all immediately.
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const elems = Array.from(document.querySelectorAll('.animate'));
-
-  if (prefersReduced) {
-    elems.forEach(el => el.classList.add('in-view'));
-    return;
-  }
-
-  const io = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Add the class that triggers CSS animations
-        entry.target.classList.add('in-view');
-        // Stop observing once revealed
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.12
-  });
-
-  elems.forEach(el => io.observe(el));
-})();
-</script>
 
 </body>
 </html>
