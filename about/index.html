@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="About Athr, an actionable threat intelligence platform that monitors leaks, credentials, and threat sources to provide instant alerts and recommendations for your organization.">
-    <meta name="keywords" content="athr, threat intelligence, cybersecurity, data leak, data breach, credential monitoring, security alerts, infosec, threat hunting">
+    <meta name="description" content="About Athr, an actionable threat intelligence platform that connects external data leaks to internal compromised assets, providing clear remediation steps.">
+    <meta name="keywords" content="athr, threat intelligence, cybersecurity, data leak, data breach, credential monitoring, security alerts, infosec, threat hunting, egypt, mena">
     <meta name="author" content="Athr Intelligence">
     <meta name="robots" content="index, follow">
 
@@ -49,6 +49,50 @@
         @media (min-width: 769px) {
             .navbar { padding: 0.5rem 0; }
         }
+
+        /* New styles for the improved About page sections */
+        .about-content {
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .about-content h2 {
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .about-content h3 {
+            margin-top: 2rem;
+            color: var(--primary-color);
+        }
+        .cta-section {
+            text-align: center;
+            padding: 4rem 1rem;
+            margin-top: 3rem;
+            background-color: var(--surface-color);
+            border-radius: 12px;
+        }
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        /* Assuming .btn classes exist from style.css */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(23, 239, 223, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -65,11 +109,28 @@
 
     <main>
         <section id="about" class="features">
-            <div class="container" style="text-align: left; max-width: 800px;">
-                <h2 class="animate up animate-delay-1">About Athr</h2>
-                <p class="animate up animate-delay-2">Athr was founded with a clear mission: to provide organizations with actionable threat intelligence that is both timely and easy to understand. In a digital landscape filled with noise, we cut through the clutter to deliver alerts that matter. We believe that proactive security shouldn't be a luxury reserved for the few, but a standard accessible to all.</p>
-                <p class="animate up animate-delay-3">Our value proposition is simple. We monitor a vast array of sources, from the dark web to public code repositories, for any mention of your organization's assets. When a potential threat is detected—be it a credential leak, a vulnerable piece of software, or chatter from a known threat actor—we don't just notify you; we provide you with the context and actionable steps needed to mitigate the risk immediately. This focus on "actionable" intelligence is what sets us apart.</p>
-                <p class="animate up animate-delay-4">Key features of the Athr platform include our secure search capabilities, which allow you to instantly query our database of monitored sources; live alerts that are prioritized based on severity; and visual analytics that help you understand your organization's threat landscape over time. With Athr, you can move from a reactive to a proactive security posture, stopping threats before they can impact your business.</p>
+            <div class="container about-content">
+
+                <!-- Our Mission -->
+                <h2 class="animate up animate-delay-1">Our Mission</h2>
+                <p class="animate up animate-delay-1">Athr (أثر) was founded with a clear mission: to make proactive threat intelligence accessible to every organization, not just a luxury for the few. In a digital landscape filled with noise, we cut through the clutter to deliver security alerts that matter. We believe that to truly secure your organization, you need intelligence that is not only timely but simple to understand and immediately actionable.</p>
+
+                <!-- Our Philosophy: Beyond Monitoring -->
+                <h2 class="animate up animate-delay-2">Beyond Monitoring: From Data to Action</h2>
+                <p class="animate up animate-delay-2">In a world of constant security alerts, "alert fatigue" is a real problem. Most tools just tell you what was leaked. Athr is built on the philosophy that you need to know how it was leaked and what to do next.</p>
+                
+                <h3 class="animate up animate-delay-3">1. Connect External Leaks to Internal Assets</h3>
+                <p class="animate up animate-delay-3">This is our core differentiator. Our Compromised Asset Guardian doesn't just tell you "an employee's credential was found." It connects that external leak to a specific, compromised internal device or user account. This transforms a generic alert into a precise, actionable starting point for your IT team.</p>
+
+                <h3 class="animate up animate-delay-4">2. Simplicity for Non-Experts, Depth for Experts</h3>
+                <p class="animate up animate-delay-4">Security is a team sport. Our platform is designed for the whole organization, not just the security experts. We translate complex data into plain-language summaries and provide a prioritized, step-by-step "Recommended Actions" checklist for every single incident. This empowers non-technical managers to understand the risk while giving experts the deep technical data they need to investigate.</p>
+
+                <h3 class="animate up animate-delay-5">3. A Platform Built for Modern Teams</h3>
+                <p class="animate up animate-delay-5">We believe in automation and integration. Athr is built to connect with the tools you already use. Our platform can automatically send critical alerts to your team's workflow, whether that's in Slack, a project management tool, or your internal ticketing system. This saves time and ensures threats are handled without delay.</p>
+
+                <!-- Our Team (Builds Local Trust) -->
+                <h2 class="animate up animate-delay-4">Our Story</h2>
+                <p class="animate up animate-delay-4">Founded in Egypt, Athr was built by a team of security researchers and engineers who were tired of seeing organizations in the MENA region struggle with overpriced, overly complex security tools. We are not a faceless corporation; we are your local partners in digital defense, dedicated to building a platform that understands the specific challenges and opportunities of our region.</p>
             </div>
         </section>
     </main>

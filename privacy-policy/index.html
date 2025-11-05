@@ -6,7 +6,7 @@
 
     <!-- SEO Meta Tags -->
     <meta name="description" content="Privacy Policy for the Athr threat intelligence platform. Understand how we collect, use, and protect your personal and organizational data.">
-    <meta name="keywords" content="athr privacy policy, data protection, user rights, cybersecurity privacy">
+    <meta name="keywords" content="athr privacy policy, data protection, user rights, cybersecurity privacy, data security">
     <meta name="author" content="Athr Intelligence">
     <meta name="robots" content="index, follow">
 
@@ -49,6 +49,41 @@
         @media (min-width: 769px) {
             .navbar { padding: 0.5rem 0; }
         }
+
+        /* Styles for the legal text */
+        .legal-content {
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .legal-content h2 {
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .legal-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        .legal-content p, .legal-content ul {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        .legal-content li {
+            margin-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .legal-content strong {
+            color: var(--text-light);
+        }
+        .last-updated {
+            font-style: italic;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
     </style>
 </head>
 <body>
@@ -65,20 +100,61 @@
 
     <main>
         <section id="privacy-policy" class="features">
-            <div class="container" style="text-align: left; max-width: 800px;">
+            <div class="container legal-content">
                 <h2 class="animate up animate-delay-1">Privacy Policy</h2>
                 
-                <h3 class="animate up animate-delay-2">Introduction</h3>
-                <p class="animate up animate-delay-2">This Privacy Policy describes how Athr collects, uses, and protects your personal information when you use our services. We are committed to ensuring that your privacy is protected.</p>
+                <h3 class="animate up animate-delay-2">1. Introduction</h3>
+                <p class="animate up animate-delay-2">Welcome to Athr. This Privacy Policy describes how Athr Intelligence collects, uses, and protects your personal and organizational information when you use our website, products, and services (collectively, the "Service"). We are committed to protecting your privacy and handling your data with transparency and care.</p>
 
-                <h3 class="animate up animate-delay-3">Data Collection</h3>
-                <p class="animate up animate-delay-3">We may collect the following information: your name, contact information including email address, and other information relevant to customer surveys and/or offers. We also collect data related to your organization's assets for the purpose of providing our threat intelligence services.</p>
+                <h3 class="animate up animate-delay-3">2. Information We Collect</h3>
+                <p class="animate up animate-delay-3">We collect several types of information to provide and improve our Service to you:</p>
+                <ul>
+                    <li class="animate up animate-delay-3"><strong>Personal Information:</strong> When you register for an account, we collect information that can be used to identify you, such as your name, email address, and password (which is immediately hashed and never stored in plaintext).</li>
+                    <li class="animate up animate-delay-3"><strong>Organizational Asset Data:</strong> To provide our threat intelligence service, we require you to submit assets to be monitored. This includes your organization's domain names, IP ranges, and specific brand or project keywords. This data is treated as highly confidential.</li>
+                    <li class="animate up animate-delay-3"><strong>Usage and Technical Data:</strong> We automatically collect information about how you interact with our Service. This may include your IP address, browser type, device information, pages visited, and the time and date of your visits. We use this data for security, fraud prevention, and to improve our service.</li>
+                </ul>
 
-                <h3 class="animate up animate-delay-4">How We Use Information</h3>
-                <p class="animate up animate-delay-4">We require this information to understand your needs and provide you with a better service, and in particular for the following reasons: internal record keeping, improving our products and services, and periodically sending promotional emails about new products, special offers or other information which we think you may find interesting using the email address which you have provided.</p>
+                <h3 class="animate up animate-delay-4">3. How We Use Your Information</h3>
+                <p class="animate up animate-delay-4">We use the information we collect for the following core purposes:</p>
+                <ul>
+                    <li class="animate up animate-delay-4"><strong>To Provide and Maintain the Service:</strong> This is our primary purpose. We use your Organizational Asset Data (domains, IPs, etc.) to scan external sources and provide you with relevant threat intelligence alerts.</li>
+                    <li class="animate up animate-delay-4"><strong>To Secure Your Account:</strong> We use your email, password, and technical data to authenticate you, secure your account, and protect our platform from fraud and abuse.</li>
+                    <li class="animate up animate-delay-4"><strong>To Improve Our Products:</strong> We analyze anonymized usage data to understand how our users interact with the platform, which helps us fix bugs and build new, valuable features.</li>
+                    <li class="animate up animate-delay-4"><strong>To Communicate With You:</strong> We use your email address to send you critical security alerts, service updates, and (with your consent) promotional information about new products or special offers. You can opt out of promotional emails at any time.</li>
+                </ul>
 
-                <h3 class="animate up animate-delay-5">User Rights</h3>
-                <p class="animate up animate-delay-5">You have the right to access, correct, or delete your personal information. You may also object to the processing of your personal data. To exercise these rights, please contact us at the email address provided on our contact page.</p>
+                <h3 class="animate up animate-delay-5">4. How We Share and Disclose Information</h3>
+                <p class="animate up animate-delay-5">Your trust is paramount. We do not sell, rent, or trade your personal information or organizational data. We only share information in the following limited circumstances:</p>
+                <ul>
+                    <li class="animate up animate-delay-5"><strong>With Third-Party Service Providers:</strong> We use trusted third-party services to operate our platform, such as cloud hosting (Firebase), user authentication (Firebase Auth), and IP intelligence (IPinfo.io). These providers are contractually obligated to protect your data and are only permitted to use it to provide their service to us.</li>
+                    <li class="animate up animate-delay-5"><strong>For Legal Requirements:</strong> We may disclose your information if required to do so by law or in response to valid requests by public authorities (e.g., a court order or government agency).</li>
+                    <li class="animate up animate-delay-5"><strong>For Security and Fraud Prevention:</strong> We may share information (like IP addresses) with services like Firebase App Check to protect our platform from bots and malicious activity.</li>
+                    <li class="animate up animate-delay-5"><strong>Business Transfers:</strong> If we are involved in a merger, acquisition, or asset sale, your information may be transferred as part of that transaction. We will notify you before your information is transferred and becomes subject to a different privacy policy.</li>
+                </ul>
+
+                <h3 class="animate up animate-delay-5">5. Data Security</h3>
+                <p class="animate up animate-delay-5">We take the security of your data extremely seriously. We implement industry-standard technical and organizational measures to protect your information from unauthorized access, use, alteration, or destruction. These measures include:</p>
+                <ul>
+                    <li class="animate up animate-delay-5">Encryption of data at rest and in transit.</li>
+                    <li class="animate up animate-delay-5">Strict access controls, ensuring only authorized personnel can access sensitive data.</li>
+                    <li class="animate up animate-delay-5">Use of secure, battle-tested services like Firebase for authentication and database management.</li>
+                    <li class="animate up animate-delay-5">Regular security reviews and updates to our infrastructure.</li>
+                </ul>
+
+                <h3 class="animate up animate-delay-5">6. Your Data Rights</h3>
+                <p class="animate up animate-delay-5">You have control over your personal information. You have the right to:</p>
+                <ul>
+                    <li class="animate up animate-delay-5"><strong>Access:</strong> Request a copy of the personal information we hold about you.</li>
+                    <li class="animate up animate-delay-5"><strong>Correction:</strong> Request that we correct any inaccurate or incomplete information.</li>
+                    <li class="animate up animate-delay-5"><strong>Deletion:</strong> Request that we delete your personal information, subject to certain legal obligations.</li>
+                </ul>
+                <p class="animate up animate-delay-5">To exercise these rights, please contact us at the email address provided on our contact page.</p>
+
+                <h3 class="animate up animate-delay-5">7. Changes to This Privacy Policy</h3>
+                <p class="animate up animate-delay-5">We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.</p>
+                
+                <h3 class="animate up animate-delay-5">8. Contact Us</h3>
+                <p class="animate up animate-delay-5">If you have any questions about this Privacy Policy, please contact us through the "Contact" link on our website.</p>
             </div>
         </section>
     </main>
