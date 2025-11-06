@@ -19,15 +19,18 @@ import 'features/dashboard/settings_page.dart';
 import 'features/dashboard/metric_details_page.dart';
 import 'features/dashboard/dashboard_shell.dart';
 import 'features/dashboard/dashboard_viewmodel.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider(
-      '6LdynMorAAAAAPo2PAi3G5s3IHz2Iqpw2R2TnzdJ',
-    ),
-  );
+  if (kIsWeb) {
+    await FirebaseAppCheck.instance.activate(
+      providerWeb: ReCaptchaV3Provider(
+        '6LdynMorAAAAAPo2PAi3G5s3IHz2Iqpw2R2TnzdJ',
+      ),
+    );
+  }
   setupLocator();
   // Registering IncidentService
   locator.registerLazySingleton(() => IncidentService());
