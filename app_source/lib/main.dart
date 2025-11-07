@@ -50,7 +50,7 @@ class AthrApp extends StatelessWidget {
       routerConfig: GoRouter(
         initialLocation: '/login',
         routes: [
-          GoRoute(path: '/', redirect: (_, __) => '/login'),
+          GoRoute(path: '/', redirect: (_, _) => '/login'),
           GoRoute(
             path: '/login',
             builder: (context, state) =>

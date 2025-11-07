@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'log.dart'; // Import the new Log model
 
 /// Enum for the severity of an incident.
-enum IncidentSeverity { critical, high, medium, low, informational, unknown }
+enum IncidentSeverity { critical, high, medium, low, unknown }
 
 /// Extension to add a helper method to [IncidentSeverity] for UI elements.
 extension IncidentSeverityColor on IncidentSeverity {
@@ -16,8 +16,6 @@ extension IncidentSeverityColor on IncidentSeverity {
         return Colors.yellow.shade700;
       case IncidentSeverity.low:
         return Colors.blue.shade700;
-      case IncidentSeverity.informational:
-        return Colors.grey.shade700;
       case IncidentSeverity.unknown:
         return Colors.grey.shade500;
     }

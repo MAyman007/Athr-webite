@@ -105,6 +105,9 @@ class IncidentsViewModel extends ChangeNotifier {
         case 3: // Category
           comparison = (a.category ?? '').compareTo(b.category ?? '');
           break;
+        case 4: // Source
+          comparison = a.source.compareTo(b.source);
+          break;
         default:
           comparison = 0;
       }

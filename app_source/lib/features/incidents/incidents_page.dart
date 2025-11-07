@@ -204,6 +204,9 @@ class _IncidentsViewState extends State<_IncidentsView> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<IncidentsViewModel>();
     final textTheme = Theme.of(context).textTheme;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double tableWidth = screenWidth / 2.10758621;
+    double paddingWidth = tableWidth / 5;
 
     return Scaffold(
       appBar: AppBar(
@@ -234,14 +237,40 @@ class _IncidentsViewState extends State<_IncidentsView> {
                 const SizedBox(height: 16),
                 _buildFilterControls(context, viewModel),
                 const SizedBox(height: 24),
-                PaginatedDataTable(
-                  header: const Text('All Incidents'),
-                  columns: _buildDataColumns(context, viewModel),
-                  source: incidentSource,
-                  sortColumnIndex: viewModel.sortColumnIndex,
-                  sortAscending: viewModel.sortAscending,
-                  rowsPerPage: 10,
-                  showCheckboxColumn: false,
+                Align(
+                  alignment: Alignment.center,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    elevation: 0,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: paddingWidth,
+                      ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: tableWidth),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            cardTheme: const CardThemeData(
+                              elevation: 0,
+                              shadowColor: Colors.transparent,
+                            ),
+                          ),
+                          child: PaginatedDataTable(
+                            header: const Center(child: Text('All Incidents')),
+                            columns: _buildDataColumns(context, viewModel),
+                            source: incidentSource,
+                            sortColumnIndex: viewModel.sortColumnIndex,
+                            sortAscending: viewModel.sortAscending,
+                            rowsPerPage: 10,
+                            showCheckboxColumn: false,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -261,11 +290,11 @@ class _IncidentsViewState extends State<_IncidentsView> {
       children: [
         // Search Field
         SizedBox(
-          width: 300,
+          width: 370,
           child: TextField(
             controller: _searchController,
             decoration: InputDecoration(
-              labelText: 'Search by name, category...',
+              labelText: 'Search by name, category, or source',
               prefixIcon: const Icon(Icons.search),
               border: const OutlineInputBorder(),
               suffixIcon: _searchController.text.isNotEmpty
@@ -334,7 +363,11 @@ class _IncidentsViewState extends State<_IncidentsView> {
         onSort: (columnIndex, ascending) =>
             viewModel.setSort(columnIndex, ascending),
       ),
-      const DataColumn(label: Text('Source')),
+      DataColumn(
+        label: const Text('Source'),
+        onSort: (columnIndex, ascending) =>
+            viewModel.setSort(columnIndex, ascending),
+      ),
     ];
   }
 }
