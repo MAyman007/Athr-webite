@@ -4,7 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'dart:async';
 import '../viewmodels/admin_dashboard_viewmodel.dart';
 import '../../../core/locator.dart';
-import '../../../core/services/firebase_service.dart';
+import '../../../core/services/admin_auth_service.dart';
 import 'package:go_router/go_router.dart';
 import 'admin_settings_page.dart';
 import 'admin_orgs_page.dart';
@@ -407,7 +407,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     );
 
     if (didRequestLogout == true && context.mounted) {
-      await locator<FirebaseService>().signOut();
+      await locator<AdminAuthService>().signOut();
       if (context.mounted) {
         context.go('/admin/login');
       }

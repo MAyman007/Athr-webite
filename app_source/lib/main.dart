@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:athr/core/locator.dart';
 import 'package:athr/core/services/firebase_service.dart';
+import 'package:athr/core/services/admin_auth_service.dart';
 import 'package:athr/core/services/incident_service.dart';
 import 'package:provider/provider.dart';
 import 'features/auth/login_page.dart';
@@ -16,6 +17,8 @@ import 'features/dashboard/dashboard_page.dart';
 import 'features/incidents/incidents_page.dart';
 import 'features/admin/pages/admin_login_page.dart';
 import 'features/admin/pages/admin_dashboard_page.dart';
+import 'features/admin/pages/admin_guard.dart';
+import 'features/dashboard/user_guard.dart';
 import 'features/dashboard/settings_page.dart';
 import 'features/dashboard/metric_details_page.dart';
 import 'features/dashboard/dashboard_shell.dart';
@@ -44,6 +47,7 @@ class AthrApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FirebaseService firebaseService = locator<FirebaseService>();
+    final AdminAuthService adminAuthService = locator<AdminAuthService>();
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -66,7 +70,7 @@ class AthrApp extends StatelessWidget {
             builder: (context, state, child) {
               return ChangeNotifierProvider(
                 create: (context) => DashboardViewModel()..loadData(),
-                child: DashboardShell(child: child),
+                child: DashboardShell(child: UserGuard(child: child)),
               );
             },
             routes: [
@@ -104,29 +108,31 @@ class AthrApp extends StatelessWidget {
           // Admin dashboard route
           GoRoute(
             path: '/admin/dashboard',
-            builder: (context, state) => const AdminDashboardPage(),
+            builder: (context, state) =>
+                const AdminGuard(child: AdminDashboardPage()),
           ),
         ],
         redirect: (BuildContext context, GoRouterState state) {
           final bool loggedIn = firebaseService.currentUser != null;
+          final bool adminLoggedIn = adminAuthService.isAuthenticated;
           final bool onLoginPage = state.matchedLocation == '/login';
           final bool onSignupPage = state.matchedLocation == '/signup';
           final bool onAdminLoginPage = state.matchedLocation == '/admin/login';
           final bool onAdminRoute = state.matchedLocation.startsWith('/admin');
 
-          // Handle admin routes
+          // Handle admin routes - use separate admin authentication
           if (onAdminRoute) {
-            // If not logged in and not on admin login page, redirect to admin login
-            if (!loggedIn && !onAdminLoginPage) {
+            // If not admin logged in and not on admin login page, redirect to admin login
+            if (!adminLoggedIn && !onAdminLoginPage) {
               return '/admin/login';
             }
-            // If logged in and on admin login page, redirect to admin dashboard
-            if (loggedIn && onAdminLoginPage) {
+            // If admin logged in and on admin login page, redirect to admin dashboard
+            if (adminLoggedIn && onAdminLoginPage) {
               return '/admin/dashboard';
             }
           }
 
-          // Handle regular app routes
+          // Handle regular app routes - use Firebase authentication
           // If not logged in and not on an auth route, redirect to login
           if (!loggedIn && !onLoginPage && !onSignupPage && !onAdminRoute) {
             return '/login';
@@ -140,9 +146,10 @@ class AthrApp extends StatelessWidget {
           // No redirect needed
           return null;
         },
-        refreshListenable: GoRouterRefreshStream(
-          firebaseService.authStateChanges,
-        ),
+        refreshListenable: Listenable.merge([
+          GoRouterRefreshStream(firebaseService.authStateChanges),
+          adminAuthService, // AdminAuthService is a ChangeNotifier
+        ]),
       ),
       theme: AppTheme.darkTheme,
     );
