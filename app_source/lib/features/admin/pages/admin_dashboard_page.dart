@@ -1058,7 +1058,79 @@ class _LoginActivityLineChart extends StatefulWidget {
       _LoginActivityLineChartState();
 }
 
-class _LoginActivityLineChartState extends State<_LoginActivityLineChart> {
+class _LoginActivityLineChartState extends State<_LoginActivityLineChart>
+    with TickerProviderStateMixin {
+  int? _touchedIndex;
+  late AnimationController _pulseController;
+  late AnimationController _shimmerController;
+  late AnimationController _glowController;
+  late Animation<double> _pulseAnimation;
+  late Animation<double> _shimmerAnimation;
+  late Animation<double> _glowAnimation;
+  late Animation<Color?> _colorAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Pulse animation for data points
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _pulseAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.4,
+        ).chain(CurveTween(curve: Curves.easeOut)),
+        weight: 50,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 1.4,
+          end: 1.2,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
+      ),
+    ]).animate(_pulseController);
+
+    // Shimmer effect for the line
+    _shimmerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+    _shimmerAnimation = Tween<double>(begin: -1.0, end: 2.0).animate(
+      CurvedAnimation(parent: _shimmerController, curve: Curves.easeInOut),
+    );
+
+    // Glow effect
+    _glowController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
+    _glowAnimation = Tween<double>(begin: 0.3, end: 0.8).animate(
+      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
+    );
+
+    // Color animation for gradient
+    _colorAnimation =
+        ColorTween(
+          begin: const Color(0xFF2196F3),
+          end: const Color(0xFF00BCD4),
+        ).animate(
+          CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+        );
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    _shimmerController.dispose();
+    _glowController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final entries = widget.data.entries.toList();
@@ -1075,141 +1147,328 @@ class _LoginActivityLineChartState extends State<_LoginActivityLineChart> {
     final maxY = entries.map((e) => e.value).reduce((a, b) => a > b ? a : b);
     final maxYValue = maxY + (maxY * 0.1); // Add 10% padding
 
-    return LineChart(
-      LineChartData(
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: false,
-          horizontalInterval: maxYValue / 5,
-          getDrawingHorizontalLine: (value) {
-            return FlLine(color: Colors.grey[300]!, strokeWidth: 1);
-          },
-        ),
-        titlesData: FlTitlesData(
-          show: true,
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 30,
-              interval: 5,
-              getTitlesWidget: (value, meta) {
-                final index = value.toInt();
-                if (index < 0 || index >= entries.length) {
-                  return const SizedBox.shrink();
-                }
-                final date = entries[index].key;
-                // Show every 5th date
-                if (index % 5 == 0) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      '${date.month}/${date.day}',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 11),
-                    ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              interval: maxYValue / 5,
-              reservedSize: 40,
-              getTitlesWidget: (value, meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+    return AnimatedBuilder(
+      animation: Listenable.merge([
+        _pulseAnimation,
+        _shimmerAnimation,
+        _glowAnimation,
+      ]),
+      builder: (context, child) {
+        return LineChart(
+          LineChartData(
+            gridData: FlGridData(
+              show: true,
+              drawVerticalLine: false,
+              horizontalInterval: maxYValue / 5,
+              getDrawingHorizontalLine: (value) {
+                return FlLine(
+                  color: _touchedIndex != null
+                      ? Colors.grey[300]!.withOpacity(0.8)
+                      : Colors.grey[300]!,
+                  strokeWidth: _touchedIndex != null ? 1.5 : 1,
                 );
               },
             ),
-          ),
-        ),
-        borderData: FlBorderData(
-          show: true,
-          border: Border(
-            bottom: BorderSide(color: Colors.grey[300]!),
-            left: BorderSide(color: Colors.grey[300]!),
-          ),
-        ),
-        minX: 0,
-        maxX: (entries.length - 1).toDouble(),
-        minY: 0,
-        maxY: maxYValue,
-        lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-            isCurved: true,
-            gradient: const LinearGradient(
-              colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
-            ),
-            barWidth: 3,
-            isStrokeCapRound: true,
-            dotData: FlDotData(
+            titlesData: FlTitlesData(
               show: true,
-              getDotPainter: (spot, percent, barData, index) {
-                return FlDotCirclePainter(
-                  radius: 4,
-                  color: Colors.white,
-                  strokeWidth: 2,
-                  strokeColor: const Color(0xFF2196F3),
-                );
-              },
-            ),
-            belowBarData: BarAreaData(
-              show: true,
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFF2196F3).withOpacity(0.3),
-                  const Color(0xFF2196F3).withOpacity(0.05),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 30,
+                  interval: 5,
+                  getTitlesWidget: (value, meta) {
+                    final index = value.toInt();
+                    if (index < 0 || index >= entries.length) {
+                      return const SizedBox.shrink();
+                    }
+                    final date = entries[index].key;
+                    final isTouched = _touchedIndex == index;
+                    // Show every 5th date
+                    if (index % 5 == 0) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: TextStyle(
+                            color: isTouched
+                                ? const Color(0xFF2196F3)
+                                : Colors.grey[600]!,
+                            fontSize: isTouched ? 12 : 11,
+                            fontWeight: isTouched
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                          child: Text('${date.day}/${date.month}'),
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  interval: maxYValue / 5,
+                  reservedSize: 40,
+                  getTitlesWidget: (value, meta) {
+                    return Text(
+                      value.toInt().toString(),
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
-        lineTouchData: LineTouchData(
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipColor: (touchedSpot) => Colors.blueGrey,
-            getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
-              return touchedBarSpots.map((barSpot) {
-                final index = barSpot.x.toInt();
-                if (index < 0 || index >= entries.length) {
-                  return null;
-                }
-                final date = entries[index].key;
-                final count = entries[index].value;
-                return LineTooltipItem(
-                  '${date.month}/${date.day}/${date.year}\n',
-                  const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+            borderData: FlBorderData(
+              show: true,
+              border: Border(
+                bottom: BorderSide(color: Colors.grey[300]!),
+                left: BorderSide(color: Colors.grey[300]!),
+              ),
+            ),
+            minX: 0,
+            maxX: (entries.length - 1).toDouble(),
+            minY: 0,
+            maxY: maxYValue,
+            lineBarsData: [
+              LineChartBarData(
+                spots: spots,
+                isCurved: true,
+                gradient: LinearGradient(
+                  colors: _touchedIndex != null
+                      ? [
+                          _colorAnimation.value ?? const Color(0xFF1976D2),
+                          const Color(0xFF2196F3),
+                          const Color(0xFF00BCD4),
+                        ]
+                      : [const Color(0xFF2196F3), const Color(0xFF1976D2)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                barWidth: _touchedIndex != null ? 5 : 3,
+                isStrokeCapRound: true,
+                dotData: FlDotData(
+                  show: true,
+                  getDotPainter: (spot, percent, barData, index) {
+                    final isTouched = _touchedIndex == index;
+                    final dotRadius = isTouched
+                        ? 6 * _pulseAnimation.value
+                        : 4.0;
+
+                    // Add glow effect for touched point
+                    if (isTouched) {
+                      return _GlowingDotPainter(
+                        radius: dotRadius.toDouble(),
+                        glowIntensity: _glowAnimation.value,
+                        innerColor: Colors.white,
+                        strokeColor:
+                            _colorAnimation.value ?? const Color(0xFF1976D2),
+                        strokeWidth: 3,
+                      );
+                    }
+
+                    return FlDotCirclePainter(
+                      radius: dotRadius.toDouble(),
+                      color: Colors.white,
+                      strokeWidth: 2,
+                      strokeColor: const Color(0xFF2196F3),
+                    );
+                  },
+                ),
+                belowBarData: BarAreaData(
+                  show: true,
+                  gradient: LinearGradient(
+                    colors: _touchedIndex != null
+                        ? [
+                            const Color(
+                              0xFF2196F3,
+                            ).withOpacity(0.5 * _glowAnimation.value),
+                            const Color(
+                              0xFF00BCD4,
+                            ).withOpacity(0.3 * _glowAnimation.value),
+                            const Color(0xFF2196F3).withOpacity(0.05),
+                          ]
+                        : [
+                            const Color(0xFF2196F3).withOpacity(0.3),
+                            const Color(0xFF2196F3).withOpacity(0.05),
+                          ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  children: [
-                    TextSpan(
-                      text: '$count login${count != 1 ? 's' : ''}',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 11,
+                ),
+              ),
+            ],
+            lineTouchData: LineTouchData(
+              enabled: true,
+              touchCallback: (FlTouchEvent event, LineTouchResponse? response) {
+                setState(() {
+                  if (!event.isInterestedForInteractions ||
+                      response == null ||
+                      response.lineBarSpots == null ||
+                      response.lineBarSpots!.isEmpty) {
+                    _touchedIndex = null;
+                    _pulseController.reverse();
+                  } else {
+                    _touchedIndex = response.lineBarSpots!.first.x.toInt();
+                    _pulseController.forward();
+                  }
+                });
+              },
+              touchTooltipData: LineTouchTooltipData(
+                getTooltipColor: (touchedSpot) => Colors.blueGrey.shade800,
+                tooltipPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                tooltipMargin: 8,
+                getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                  return touchedBarSpots.map((barSpot) {
+                    final index = barSpot.x.toInt();
+                    if (index < 0 || index >= entries.length) {
+                      return null;
+                    }
+                    final date = entries[index].key;
+                    final count = entries[index].value;
+                    return LineTooltipItem(
+                      '${date.day}/${date.month}/${date.year}\n',
+                      const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
                       ),
-                    ),
-                  ],
-                );
-              }).toList();
-            },
+                      children: [
+                        TextSpan(
+                          text: '$count login${count != 1 ? 's' : ''}',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList();
+                },
+              ),
+              handleBuiltInTouches: true,
+              getTouchedSpotIndicator:
+                  (LineChartBarData barData, List<int> spotIndexes) {
+                    return spotIndexes.map((spotIndex) {
+                      return TouchedSpotIndicatorData(
+                        FlLine(
+                          color:
+                              (_colorAnimation.value ?? const Color(0xFF2196F3))
+                                  .withOpacity(0.6 * _glowAnimation.value),
+                          strokeWidth: 3,
+                          dashArray: [8, 4],
+                        ),
+                        FlDotData(
+                          show: true,
+                          getDotPainter: (spot, percent, barData, index) {
+                            return FlDotCirclePainter(
+                              radius: 10 * _pulseAnimation.value,
+                              color:
+                                  (_colorAnimation.value ??
+                                          const Color(0xFF1976D2))
+                                      .withOpacity(0.3),
+                              strokeWidth: 0,
+                            );
+                          },
+                        ),
+                      );
+                    }).toList();
+                  },
+            ),
           ),
-          handleBuiltInTouches: true,
-        ),
-      ),
+        );
+      },
     );
   }
+}
+
+// Custom glowing dot painter for fancy hover effects
+class _GlowingDotPainter extends FlDotPainter {
+  final double radius;
+  final double glowIntensity;
+  final Color innerColor;
+  final Color strokeColor;
+  final double strokeWidth;
+
+  _GlowingDotPainter({
+    required this.radius,
+    required this.glowIntensity,
+    required this.innerColor,
+    required this.strokeColor,
+    required this.strokeWidth,
+  });
+
+  @override
+  void draw(Canvas canvas, FlSpot spot, Offset offsetInCanvas) {
+    // Draw outer glow layers
+    final glowPaint1 = Paint()
+      ..color = strokeColor.withOpacity(0.15 * glowIntensity)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(offsetInCanvas, radius * 2.5, glowPaint1);
+
+    final glowPaint2 = Paint()
+      ..color = strokeColor.withOpacity(0.25 * glowIntensity)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(offsetInCanvas, radius * 1.8, glowPaint2);
+
+    final glowPaint3 = Paint()
+      ..color = strokeColor.withOpacity(0.4 * glowIntensity)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(offsetInCanvas, radius * 1.4, glowPaint3);
+
+    // Draw stroke
+    final strokePaint = Paint()
+      ..color = strokeColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+    canvas.drawCircle(offsetInCanvas, radius, strokePaint);
+
+    // Draw inner circle
+    final innerPaint = Paint()
+      ..color = innerColor
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(offsetInCanvas, radius - strokeWidth, innerPaint);
+
+    // Draw highlight
+    final highlightPaint = Paint()
+      ..color = Colors.white.withOpacity(0.6 * glowIntensity)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(
+      offsetInCanvas.translate(-radius * 0.3, -radius * 0.3),
+      radius * 0.4,
+      highlightPaint,
+    );
+  }
+
+  @override
+  Size getSize(FlSpot spot) {
+    return Size(radius * 2.5 * 2, radius * 2.5 * 2);
+  }
+
+  @override
+  Color get mainColor => innerColor;
+
+  @override
+  FlDotPainter lerp(FlDotPainter a, FlDotPainter b, double t) {
+    return this;
+  }
+
+  @override
+  List<Object?> get props => [
+    radius,
+    glowIntensity,
+    innerColor,
+    strokeColor,
+    strokeWidth,
+  ];
 }

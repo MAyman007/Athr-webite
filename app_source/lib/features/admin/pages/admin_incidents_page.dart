@@ -52,9 +52,9 @@ class _AdminIncidentsViewState extends State<_AdminIncidentsView> {
                 _buildDetailRow(
                   'Collected At',
                   incident.collectedAtDate != null
-                      ? DateFormat.yMMMd().add_jm().format(
-                          incident.collectedAtDate!,
-                        )
+                      ? DateFormat(
+                          'dd/MM/yyyy, HH:mm',
+                        ).format(incident.collectedAtDate!)
                       : incident.collectedAt,
                 ),
                 _buildDetailRow(
@@ -423,7 +423,7 @@ class _IncidentsDataSource extends DataTableSource {
           Text(
             incident.collectedAtDate != null
                 ? DateFormat(
-                    'MMM dd, yyyy HH:mm',
+                    'dd/MM/yyyy HH:mm',
                   ).format(incident.collectedAtDate!)
                 : incident.collectedAt,
           ),

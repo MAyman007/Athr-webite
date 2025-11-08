@@ -291,7 +291,7 @@ class _AdminOrgsViewState extends State<_AdminOrgsView> {
   String _formatDate(String dateStr) {
     try {
       final date = DateTime.parse(dateStr);
-      return DateFormat.yMMMMd().add_jm().format(date);
+      return DateFormat('dd/MM/yyyy, HH:mm').format(date);
     } catch (e) {
       return dateStr;
     }
@@ -570,7 +570,9 @@ class _OrganizationDataSource extends DataTableSource {
         ),
         DataCell(Text(org.userCount.toString())),
         DataCell(Text(org.incidentCount.toString())),
-        DataCell(Text(DateFormat.yMd().format(DateTime.parse(org.createdAt)))),
+        DataCell(
+          Text(DateFormat('dd/MM/yyyy').format(DateTime.parse(org.createdAt))),
+        ),
         DataCell(
           Text(
             org.domains.isEmpty ? 'None' : '${org.domains.length} domain(s)',

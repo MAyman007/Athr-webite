@@ -174,7 +174,7 @@ class _AdminUsersViewState extends State<_AdminUsersView> {
   String _formatDate(String dateStr) {
     try {
       final date = DateTime.parse(dateStr);
-      return DateFormat.yMMMMd().add_jm().format(date);
+      return DateFormat('dd/MM/yyyy, HH:mm').format(date);
     } catch (e) {
       return dateStr;
     }
@@ -505,7 +505,9 @@ class _UserDataSource extends DataTableSource {
           ),
         ),
         DataCell(Text(user.loginCount.toString())),
-        DataCell(Text(DateFormat.yMd().format(DateTime.parse(user.createdAt)))),
+        DataCell(
+          Text(DateFormat('dd/MM/yyyy').format(DateTime.parse(user.createdAt))),
+        ),
       ],
       onSelectChanged: (selected) {
         if (selected ?? false) onRowTap(user, orgName);
