@@ -30,6 +30,7 @@ Athr is available in multiple formats to suit your workflow:
 * **Incident Management:** A full-featured triage and investigation page to manage the lifecycle of an incident from "New" to "Resolved."
 * **Contextual Recommendations:** A dynamic engine that provides a prioritized, step-by-step action plan for every specific incident.
 * **Asset-Based Search (Threat Hunting):** A powerful search feature that allows security teams to actively hunt for threats across our global database using their known assets (domains, IPs, keywords).
+* **Admin Dashboard:** A comprehensive administration interface for platform owners to manage all organizations, users, and incidents. Features include real-time analytics, organization and user management with detailed profiles, incident monitoring, system configuration controls, etc.
 
 ## 💻 Technology Stack
 
@@ -80,24 +81,33 @@ To get the project running locally, you will need to set up both the Flutter fro
 
 ### 1. Frontend Setup (`athr_app`)
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
+
     ```bash
     git clone https://github.com/MAyman007/AthrPlatform.git
     cd AthrPlatform/app_source
     ```
-2.  **Install dependencies:**
+
+2. **Install dependencies:**
+
     ```bash
     flutter pub get
     ```
-3.  **Configure Firebase:**
+
+3. **Configure Firebase:**
+
     * Run the FlutterFire CLI to configure your app: `flutterfire configure`
     * This will generate your `lib/firebase_options.dart` file.
-4.  **Configure App Check (Critical):**
+
+4. **Configure App Check (Critical):**
+
     * Go to the Firebase Console -> App Check and register your web app.
     * Get your reCAPTCHA v3 site key.
     * Paste the key into `web/index.html` and `lib/main.dart`.
     * Go to the Google Cloud Console -> reCAPTCHA Enterprise and **add `localhost`** to the list of allowed domains.
-5.  **Run the App:**
+
+5. **Run the App:**
+
     ```bash
     flutter run -d chrome
     ```
@@ -106,37 +116,46 @@ To get the project running locally, you will need to set up both the Flutter fro
 
 This server is required for features like the VPN/Proxy check.
 
-1.  **Navigate to the backend directory:**
+1. **Navigate to the backend directory:**
+
     ```bash
     cd Web-APIs
     ```
-2.  **Create a virtual environment and install dependencies:**
+
+2. **Create a virtual environment and install dependencies:**
+
     ```bash
     python -m venv venv
     source venv/bin/activate  # (or .\venv\Scripts\activate on Windows)
     pip install -r requirements.txt
     ```
-3.  **Set Environment Variables in `.env`:**
+
+3. **Set Environment Variables in `.env`:**
     You must set these for the server to run.
+
     ```bash
     IPINFO_API_KEY="your_ipinfo.io_api_key"
     YOUR_APP_SECRET_KEY="generate_a_long_random_string_here"
     ```
-4.  **Add Service Account Key:**
+
+4. **Add Service Account Key:**
+
     * Go to your Firebase project settings -> Service Accounts.
     * Generate a new private key and download the JSON file.
     * Place the file in this directory and rename it to `firebase-service-account-key.json`.
-5.  **Run the Backend Server:**
+
+5. **Run the Backend Server:**
+
     ```bash
     python main.py
     ```
+
     The API server will now be running on `http://0.0.0.0:8000`.
 
 ## 🗺️ Future Roadmap
 
 This project is in active development. Key features on our roadmap include:
 
-* **Admin Dashboard:** A separate, secure application for platform owners to manage users, organizations, and the recommendations database.
 * **Public API:** A full-featured, billed API for customers to programmatically access their data and integrate with their own tools (e.g., SIEM, Slack).
 * **Automated Threat Ingestion:** Moving the search logic to a recurring background job that automatically finds and ingests new threats into the Customer Data Vault.
 * **Full Localization:** Complete Arabic (ar) language support across the entire platform.
