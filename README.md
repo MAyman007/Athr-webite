@@ -15,6 +15,13 @@ We don't just show you that a leak occurred. We provide a full, contextual pictu
 * **How it was leaked:** We link external leaks to specific, compromised internal assets (machines, user accounts) by analyzing malware logs.
 * **What to do now:** Every incident is paired with a prioritized, step-by-step checklist of "Recommended Actions" to guide your remediation.
 
+## 🌐 Platform Availability
+
+Athr is available in multiple formats to suit your workflow:
+
+* **Web Application:** Access Athr directly from your browser at [athr.pages.dev](https://athr.pages.dev) - no installation required.
+* **Desktop Application:** Download native desktop versions for Windows (macOS, and Linux support soon) from our [Releases page](https://github.com/MAyman007/AthrPlatform/releases).
+
 ## 🚀 Core Features
 
 * **High-Level Dashboard:** A single pane of glass showing your organization's key security metrics, including KPIs, incidents by severity, and top leak sources.
@@ -75,8 +82,8 @@ To get the project running locally, you will need to set up both the Flutter fro
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/MAyman007/athr-website.git
-    cd athr-website/app_source
+    git clone https://github.com/MAyman007/AthrPlatform.git
+    cd AthrPlatform/app_source
     ```
 2.  **Install dependencies:**
     ```bash
